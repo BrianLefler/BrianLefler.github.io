@@ -1,0 +1,26 @@
+<head/>
+<body>
+<script>
+  function showPreviewLink() {
+    // The ID of the element that we wish to randomly show.
+    var elementToShow = 'randomPreviewLink',
+
+    // The probability of showing the element. This number must be between 0 and 1.
+    // 0 will never show it, and 1 will always show it.
+    probabilityOfShowing = .66;
+
+    if (Math.random() > 1 - probabilityOfShowing) {
+      document.getElementById(elementToShow).style.display = 'block';
+    }
+  }
+
+  if (document.readyState === 'complete') {
+    showPreviewLink();
+  } else {
+    window.addEventListener('load', showPreviewLink);
+  }
+</script>
+
+<span>Element has a 66% chance of showing:&nbsp;<span style="display:none" id="randomPreviewLink">Shown</span><span>
+
+</body>
