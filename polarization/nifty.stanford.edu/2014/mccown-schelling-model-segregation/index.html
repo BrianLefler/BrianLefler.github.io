@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html><head>
+	<meta charset="utf-8">
+	<title>Schelling's Model of Segregation</title>
+	<script src="jquery.js"></script>
+    <script src="schelling-obf.js"></script>
+	
+	<link rel="stylesheet" href="styles.css" type="text/css" />
+	
+	<style>
+	
+		heading { text-align: center }
+	</style>
+</head>
+<body>
+
+<heading>
+<h1>Schelling's Model of Segregation</h1>
+
+<p>
+<a href="http://www.harding.edu/fmccown/">Frank McCown</a><br>
+Computer Science Department<br>
+Harding University<br>
+<a href="mailto:fmccown@harding.edu">fmccown@harding.edu</a>
+</p>
+</heading>
+
+<h2>Overview</h2>
+<p>
+Racial segregation has always been a pernicious social problem in the United States.
+Although much effort has been extended to desegregate our schools, churches, and neighborhoods, 
+the <a href="http://tcf.org/blog/detail/racial-segregation-is-still-a-problem">US continues to remain segregated</a>
+by race and economic lines. Why is segregation such a difficult problem to eradicate?
+</p>
+<p>
+In 1971, the American economist <a href="http://en.wikipedia.org/wiki/Thomas_Schelling">Thomas Schelling</a> created
+an agent-based model that might help explain why segregation is so difficult to combat.  His <i>model of segregation</i>
+showed that even when individuals (or "agents") didn't mind being surrounded 
+or living by agents of a different race, 
+they would still <i>choose</i> to segregate themselves from other agents over time!
+Although the model is quite simple, it gives a fascinating look at how individuals
+might self-segregate, even when they have no explicit desire to do so.
+</p>
+<p>
+In this assignment, students will create a simulation of Schelling's model. The user should be able to set a number of parameters of
+the model and watch it go.  Bonus is given for implementing extra model features. 
+</p>
+
+<h2>Meta Information</h2>
+<table border cellpadding="4">
+<tbody>
+<tr>
+	<td>Summary</td>
+	<td>Watch as two population groups self-segregate over time into clumps. 
+	This assignment gives students the change to implement a game-like model from 
+	the social sciences that gives an
+	unintuitive result. It gives the instructor a chance to address a
+	societal problem that students are already naturally interested in.
+	</td>
+</tr>
+<tr>
+	<td>Topics</td>
+	<td>2D arrays, generating random numbers. In advanced courses other topics
+	can be addressed like: timers, using various GUI widgets, MVC, threads, etc.
+	</td>
+</tr>
+<tr>
+	<td>Audience</td>
+	<td>CS1 or above
+	</td>
+</tr>
+<tr>
+	<td>Difficulty</td>
+	<td>This assignment is intermediate to advanced. Students should be given a
+	week or two to complete it.
+	</td>
+</tr>
+<tr>
+	<td>Strengths</td>
+	<td>1) It addresses a real-world problem that students are naturally interested in. 
+	2) It's visually appealing and fun to play with.
+	3) Can be implemented in a console using X's and O's or in a GUI or web environment.
+	4) Uses 2D arrays and simple algorithms which do not require advanced data structures.	
+	</td>
+</tr>
+<tr>
+	<td>Weaknesses</td>
+	<td>Some students struggle with going outside the bounds of a 2D array
+	(welcome to programming!). Debugging a program that manipulates a large 2D
+	array can be daunting to some.
+	</td>
+</tr>
+<tr>
+	<td>Dependencies</td>
+	<td>Requires how to create and manipulate a 2D array, how to generate random
+	numbers with particular distributions.
+	</td>
+</tr>
+<tr>
+	<td>Variants</td>
+	<td>1) Allow students to develop different algorithms for moving 
+	dissatisfied agents. 2) Will the model behave differently if the world "wraps"
+	around or is formed by different shapes? 3) Give the students the solution and have them
+	run the simulation with various Similarity parameters and graph the average
+	number of rounds it takes before all agents are satisfied.  4) This assignment
+	is a good way to emphasize code reusability: after students have turned in their
+	program, have them introduce a third agent type. How many lines of code did they
+	have to modify?	
+	</td>
+</tr>
+
+</tbody>
+</table>
+
+<h2>How the Model Works</h2>
+<p>Schelling's model will now be explained with some minor changes.  Suppose there are two types of agents: X and O.
+The two types of agents might represent different races, ethnicity, economic status, etc.
+Two populations of the two agent types are initially placed into random locations
+of a neighborhood represented
+by a grid. After placing all the agents in the grid, each cell is either occupied
+by an agent or is empty as shown below.
+<br><br>
+<img src="images/grid1.png" alt="Initial setup of the grid">
+</p>
+<p>
+Now we must determine if each agent is <i>satisfied</i> with its current location. 
+A <b>satisfied</b> agent is one that is surrounded by at least <i>t</i> percent
+of agents that are like itself. This threshold <i>t</i> is one that will apply to
+all agents in the model, even though in reality everyone might have a different 
+threshold they are satisfied with. Note that the higher the threshold, the higher
+the likelihood the agents will not be satisfied with their current location.
+</p>
+<p>
+For example, if <i>t</i> = 30%, agent X is satisfied if at least 30% of its
+neighbors are also X.  If fewer than 30% are X, then the agent is not satisfied,
+and it will want to change its location in the grid. For the remainder of this explanation, let's 
+assume a threshold <i>t</i> of 30%. This means every agent is <i>fine with being
+in the minority</i> as long as there are at least 30% of similar agents in adjacent cells.
+</p>
+</p>
+The picture below (left) shows a satisfied agent because 50% of X's neighbors are also 
+X (50% &gt; <i>t</i>).  The next X (right)  
+is not satisfied because only 25% of its neighbors are X (25% &lt; <i>t</i>).
+Notice that in this example empty cells are not counted when calculating similarity.
+<br><br>
+<img src="images/grid2.png" alt="Satisfied agent"> &nbsp; &nbsp;
+<img src="images/grid3.png" alt="Dissatisfied agent">
+</p>
+<p>
+When an agent is not satisfied, it can be moved to any vacant location in the grid.
+Any algorithm can be used to choose this new location. For example, a randomly 
+selected cell may be chosen, or the agent could move to the nearest available location.
+</p>
+<p>In the image below (left), all dissatisfied agents have an asterisk next to them.
+The image on the right shows the new configuration after all the dissatisfied
+agents have been moved to unoccupied cells at random. Note that the new configuration may 
+cause some agents which were previously satisfied to become dissatisfied!
+<br><br>
+<img src="images/grid4.png" alt="Dissatisfied agents with asterisk">
+&nbsp; &nbsp;
+<img src="images/grid5.png" alt="New configuration">
+</p>
+<p>
+All dissatisfied agents must be moved in the same <i>round</i>. After the round is
+complete, a new round begins, and dissatisfied agents are once again moved to new
+locations in the grid.  These rounds continue until all agents in the neighborhood are
+satisfied with their location. 
+</p>
+
+<h2>McCown's Example</h2>
+
+<p>
+The example below was implemented using HTML5 and jQuery. Press <i>Reset</i> to re-initialize the grid and <i>Start</i> to begin the
+simulation. You
+can experiment with a number of parameters and see how the model behaves.
+For example, increase Similar to 50% and see how that affects the amount of
+"clumping". What happens when Similar is set to 70%?  What happens when one population is much
+larger than the other (75/25)?
+</p>
+
+<p>Simulation by Frank McCown</p>
+	
+<table class="board" width="400" height="400">
+	<tbody>
+		<tr>
+			<td>Your browser must support JavaScript for
+			the simulation to work.</td>
+	</tbody>
+</table>
+		
+		
+	<div style="font-size: smaller; margin-top: 5px">Round <span id="round">0</span></div>
+	<div style="font-size: smaller; margin-top: 5px">Satisfied <span id="satisfied">0 %</span></div>
+	
+	<br />
+		
+	<div id="settings1" style="float:left; width:100px">
+	<input type="button" class="command" id="reset"value="Reset"><br />
+	<input type="button" class="command" id="start" value="Start"><br />
+	<input type="button" class="command" id="stop" value="Stop"><br />
+	<input type="button" class="command" id="step" value="Step">
+	</div>
+	
+	<div id="settings2" style="width:450px">
+	<table cellpadding="0">
+	<tr>
+	<td width="150">Similar: <span id="similar-value"></span>%</td>
+	<td width="300" id="similar-field">
+		<input type="text" id="similar" value="30" size="5" />
+	</td>
+	</tr>
+	<tr>
+	<td>Red/Blue: <span id="red-blue-value"></span>%</td>
+	<td id="red-blue-field"><input type="text" id="red" value="50" size="3"> /
+		<input type="text" id="blue" value="50" size="3" /></td>
+	</tr>		
+	<tr>
+	<td>Empty: <span id="empty-value"></span>%</td>
+	<td id="empty-field"><input type="text" id="empty" value="10" size="5"></td>
+	</tr>
+	<tr>
+	<td>Size: <span id="size-value"></span></td>
+	<td id="size-field"><input type="text" id="size" value="3" size="5"></td>
+	</tr>
+	<tr>
+	<td>Delay: <span id="delay-value"></span> ms</td> 
+	<td id="delay-field"><input type="text" id="delay" value="100" size="5"></td>
+	</tr>
+	</table>
+	</div>
+	
+
+<h2>Acknowledgements</h2>
+<p>
+I'd like to thank David Easley and Jon Kleinberg whose excellent book 
+<a href="http://www.cs.cornell.edu/home/kleinber/networks-book/"><i>Networks, Crowds, and Markets</i></a> 
+first introduced me to Schelling's Segregation Model.
+</p>
+
+</body>
+</html>
